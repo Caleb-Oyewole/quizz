@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Course Material</title>
+</head>
+<body>
+    <h1>Upload Course Material</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <label for="file-input">Choose a file:</label>
+        <input type="file" id="file-input" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="status-message"></div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const statusDiv = document.getElementById('status-message');
+            
+            statusDiv.textContent = 'Uploading...';
+            statusDiv.style.color = 'blue';
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    statusDiv.textContent = 'Success: ' + result.message;
+                    statusDiv.style.color = 'green';
+                } else {
+                    statusDiv.textContent = 'Error: ' + result.error;
+                    statusDiv.style.color = 'red';
+                }
+            } catch (error) {
+                statusDiv.textContent = 'An error occurred during the upload.';
+                statusDiv.style.color = 'red';
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

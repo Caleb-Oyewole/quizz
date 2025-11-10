@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.app {
+    background-color: #fff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.app h1 {
+    font-size: 24px;
+    color: #333;
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quiz-container {
+    padding: 20px 0;
+}
+
+#question {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+#answer-buttons {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 15px;
+    text-align: left;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover:not([disabled]) {
+    background-color: #e9e9e9;
+}
+
+.btn:disabled {
+    cursor: no-drop;
+}
+
+#next-btn {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    width: 150px;
+    border: 0;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px auto 0;
+    display: none; /* We will show this with JavaScript */
+}
+
+.btn.correct {
+    background: #28a745;
+    color: #fff;
+    border-color: #28a745;
+}
+
+.btn.incorrect {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}

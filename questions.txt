@@ -1,0 +1,7 @@
+Question: What is the capital of Nigeria?
+Options: Lagos, Abuja, Kano, Port Harcourt
+Correct Answer: Abuja
+
+Question: Which university is known as the "first and the best" in Nigeria?
+Options: University of Ibadan, Obafemi Awolowo University, University of Lagos, Ahmadu Bello University
+Correct Answer: University of Ibadan
