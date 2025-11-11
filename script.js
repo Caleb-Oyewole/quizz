@@ -1,59 +1,42 @@
-const questions = [
-    {
-        question: "What is the capital of Nigeria?",
-        answers: [
-            { text: "Lagos", correct: false },
-            { text: "Abuja", correct: true },
-            { text: "Kano", correct: false },
-            { text: "Port Harcourt", correct: false },
-        ]
-    },
-    {
-        question: "Which country is home to the world's largest university by enrollment?",
-        answers: [
-            { text: "India", correct: true },
-            { text: "USA", correct: false },
-            { text: "China", correct: false },
-            { text: "Russia", correct: false },
-        ]
-    },
-    {
-        question: "What does 'GPA' stand for?",
-        answers: [
-            { text: "Great Personal Achievement", correct: false },
-            { text: "Grade Point Average", correct: true },
-            { text: "General Proficiency Assessment", correct: false },
-            { text: "Graduate Placement Aspiration", correct: false },
-        ]
-    }
-];
-
-// Get elements from the HTML
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
 
+let questions = []; // This will now be populated by the API call
 let currentQuestionIndex = 0;
 let score = 0;
 
 // Function to start the quiz
-function startQuiz() {
-    currentQuestionIndex = 0;
-    score = 0;
-    nextButton.innerHTML = "Next";
-    showQuestion();
+async function startQuiz() {
+    // Fetch questions from our backend API
+    try {
+        const response = await fetch('/api/quiz');
+        questions = await response.json();
+        
+        if (questions.length === 0) {
+            questionElement.innerHTML = "No quiz questions found! Please upload a file first.";
+            nextButton.style.display = "none";
+            return;
+        }
+
+        currentQuestionIndex = 0;
+        score = 0;
+        nextButton.innerHTML = "Next";
+        showQuestion();
+    } catch (error) {
+        questionElement.innerHTML = "Error loading quiz questions. Please try again later.";
+        console.error('Failed to fetch quiz questions:', error);
+    }
 }
 
 // Function to display the question and answers
 function showQuestion() {
-    // Reset state for new question
     resetState();
     
     let currentQuestion = questions[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
 
-    // Create buttons for each answer
     currentQuestion.answers.forEach(answer => {
         const button = document.createElement("button");
         button.innerHTML = answer.text;
@@ -86,7 +69,6 @@ function selectAnswer(e) {
         selectedBtn.classList.add("incorrect");
     }
 
-    // Disable all other buttons after an answer is selected
     Array.from(answerButtons.children).forEach(button => {
         if (button.dataset.correct === "true") {
             button.classList.add("correct");

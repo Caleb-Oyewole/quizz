@@ -27,6 +27,7 @@ class QuizQuestion(db.Model):
 
 @app.route('/')
 def index():
+    # Renders index.html, which contains the file upload form.
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
@@ -44,18 +45,16 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
 
-        # Process the uploaded file
         try:
             with open(filepath, 'r') as f:
                 lines = f.readlines()
-                
-            # Parse the text file content and create question objects
+            
             questions_to_add = []
             current_question = {}
             for line in lines:
                 line = line.strip()
+                # Logic to parse the text file format (Question:, Options:, Correct Answer:)
                 if line.startswith("Question:"):
-                    # Save the previous question if it exists
                     if current_question:
                         questions_to_add.append(current_question)
                     current_question = {'question_text': line.split(':', 1)[1].strip()}
@@ -64,11 +63,9 @@ def upload_file():
                 elif line.startswith("Correct Answer:"):
                     current_question['correct_answer'] = line.split(':', 1)[1].strip()
             
-            # Add the last question to the list
             if current_question:
                 questions_to_add.append(current_question)
 
-            # Add all questions to the database
             for q_data in questions_to_add:
                 new_question = QuizQuestion(
                     question_text=q_data['question_text'],
@@ -85,9 +82,25 @@ def upload_file():
             }), 200
             
         except Exception as e:
+            # Important: Remove the saved file if processing fails in a production environment
             return jsonify({'error': f'Failed to process file: {str(e)}'}), 500
 
     return jsonify({'error': 'An unknown error occurred'}), 500
+
+# API ROUTE: Get questions from the database for the quiz front-end
+@app.route('/api/quiz', methods=['GET'])
+def get_quiz_questions():
+    """Retrieves all questions from the database and returns them as JSON."""
+    questions = QuizQuestion.query.all()
+    quiz_data = []
+    for q in questions:
+        # Splits the comma-separated options string from the DB into the required JSON structure
+        options_list = [{"text": opt.strip(), "correct": opt.strip() == q.correct_answer} for opt in q.options.split(',')]
+        quiz_data.append({
+            "question": q.question_text,
+            "answers": options_list
+        })
+    return jsonify(quiz_data)
 
 if __name__ == '__main__':
     with app.app_context():
