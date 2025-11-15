@@ -1,11 +1,14 @@
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 import os
+from pathlib import Path
 
 app = Flask(__name__)
 
-# Configure the database (a file named site.db will be created)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+# Use an absolute path for the SQLite file so it's created in the project folder
+basedir = Path(__file__).resolve().parent
+sqlite_path = (basedir / 'site.db').as_posix()
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{sqlite_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
